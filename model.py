@@ -13,6 +13,7 @@ import gymnasium as gym
 import matplotlib.pyplot as plt
 
 from main import TaxiGame
+from replay_manager import ReplayManager
 
 Transition = namedtuple('Transition',
                         ('state', 'action', 'next_state', 'reward'))
@@ -174,7 +175,7 @@ memory = ReplayMemory(100000)
 episode_rewards = []
 
 if torch.cuda.is_available():
-    num_episodes = 20000
+    num_episodes = 5
 else:
     num_episodes = 50
 
@@ -190,7 +191,7 @@ for i_episode in range(num_episodes):
         reward = torch.tensor([reward], device=device)
         done = terminated or truncated
 
-        training_states.append(observation)
+        training_states.append((i_episode, observation))
 
         if terminated:
             next_state = None
@@ -218,9 +219,8 @@ for i_episode in range(num_episodes):
             plot_reward()
             break
 
-# np.set_printoptions(threshold=np.inf, linewidth=np.inf)
-# with open('./train_states.txt', 'w') as f:
-#     f.write(np.array2string(np.array(training_states), separator=', '))
+replay_manager = ReplayManager()
+replay_manager.save_to_file(training_states)
 
 print('Complete')
 plot_reward(show_result=True)

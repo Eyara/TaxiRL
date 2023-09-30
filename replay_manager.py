@@ -1,4 +1,8 @@
+import itertools
+
 import numpy as np
+
+from main import TaxiGame
 
 
 class ReplayManager:
@@ -18,3 +22,41 @@ class ReplayManager:
 
                 f.write(np.array2string(np.array(i[1]), separator=', '))
                 f.write('\n')
+
+    def load_from_file(self):
+        result = []
+        with open('./%s' % self.filename, 'r') as f:
+            cur_episode = -1
+
+            for line in f:
+                if 'Episode' in line:
+                    cur_episode += 1
+                else:
+                    result.append((cur_episode, [int(i) for i in
+                                                 line.replace('\n', '').replace('[', '').replace(']', '').split(', ')]))
+
+        return [list(g) for k, g in itertools.groupby(result, lambda x: x[0])]
+
+    def get_top_n(self, num):
+        result = self.load_from_file()
+        return sorted(result, key=lambda x: len(x))[:num]
+
+
+def play_replay(episode, taxi_game, root):
+    for step in episode[0]:
+        taxi_game.set_grid_field(np.array(step[1]).reshape((4, 4)))
+        taxi_game.draw_field(True)
+        root.after(1000)
+        root.update()
+
+
+if __name__ == '__main__':
+    rm = ReplayManager()
+    best_episode = rm.get_top_n(1)
+
+    taxi_game = TaxiGame()
+    taxi_game.create_replay_env()
+
+    play_replay(best_episode, taxi_game, taxi_game.get_root())
+
+    taxi_game.run_mainloop()

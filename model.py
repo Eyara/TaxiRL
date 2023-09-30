@@ -175,7 +175,7 @@ memory = ReplayMemory(100000)
 episode_rewards = []
 
 if torch.cuda.is_available():
-    num_episodes = 5
+    num_episodes = 10000
 else:
     num_episodes = 50
 

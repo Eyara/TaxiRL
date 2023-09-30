@@ -1,7 +1,7 @@
+import random
 import tkinter as tk
 import tkinter.font as font
 
-import random
 import numpy as np
 
 
@@ -58,7 +58,7 @@ class TaxiGame:
             self.generate_new_point(new_pos, 2, is_gui)
         elif new_field_point == 5:
             self.generate_new_point(new_pos, 5, is_gui)
-        elif  new_field_point == 6:
+        elif new_field_point == 6:
             self._was_run_red_light = True
             self.generate_new_point(new_pos, 5, is_gui)
 
@@ -99,7 +99,7 @@ class TaxiGame:
             self._was_success_step = True
             self._step_remaining = abs(new_pos[0] - point_new[0]) + abs(new_pos[1] - point_new[1]) + 1
 
-    def toggle_traffic_light(self, is_gui = False):
+    def toggle_traffic_light(self, is_gui=False):
         green_light = self.index_2d(5)
         result_light = self.index_2d(6) if green_light is None else green_light
         result_point = 5 if green_light is None else 6
@@ -207,6 +207,20 @@ class TaxiGame:
         self._root.geometry("800x800")
         self.draw_field()
 
+    def set_grid_field(self, grid):
+        self._grid_field = grid
+
+    def create_replay_env(self):
+        self._root = tk.Tk()
+        self._root.title("Taxi game's replay")
+        self._root.geometry("800x800")
+
+    def get_root(self):
+        return self._root
+
+    def run_mainloop(self):
+        self._root.mainloop()
+
     def reset(self):
         # self.create_env()
         self._score = 0
@@ -233,7 +247,7 @@ class TaxiGame:
     def get_action_sample(self):
         return random.choice(self._action_list)
 
-    def draw_field(self):
+    def draw_field(self, is_replay_mode=False):
         for c in range(self._h):
             self._root.columnconfigure(index=c, weight=1)
         for r in range(self._w):
@@ -243,9 +257,9 @@ class TaxiGame:
             for c in range(self._w):
                 self.set_button(r, c)
 
-        self._root.bind("<KeyPress>", self.keydown)
-
-        self._root.mainloop()
+        if is_replay_mode is False:
+            self._root.bind("<KeyPress>", self.keydown)
+            self._root.mainloop()
 
 
 if __name__ == '__main__':

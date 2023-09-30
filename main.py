@@ -35,6 +35,7 @@ class TaxiGame:
 
         self._root = None
         self._step_remaining = 2
+        self._stop_threshold = 300
         self._was_success_step = False
         self._was_run_red_light = False
         self._score = 0
@@ -142,7 +143,7 @@ class TaxiGame:
         self.toggle_traffic_light()
 
         return np.array(self._grid_field).flatten(), self._score, True if self._was_success_step else False, \
-            True if self._step_remaining < -1 * 250 else False, None
+            True if self._step_remaining < -1 * self._stop_threshold else False, None
 
     # Only for a manual testing
     def keydown(self, e):

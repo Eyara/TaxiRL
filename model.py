@@ -170,7 +170,7 @@ target_net = DQN(n_observations, n_actions).to(device)
 target_net.load_state_dict(policy_net.state_dict())
 
 optimizer = optim.AdamW(policy_net.parameters(), lr=LR, amsgrad=True)
-memory = ReplayMemory(100000)
+memory = ReplayMemory(500000)
 
 episode_rewards = []
 

@@ -39,14 +39,14 @@ class ReplayManager:
 
     def get_top_n(self, num):
         result = self.load_from_file()
-        return sorted(result, key=lambda x: len(x))[:num]
+        return sorted(filter(lambda x: len(x) > 5, result), key=lambda x: len(x))[:num]
 
 
 def play_replay(episode, taxi_game, root):
     for step in episode[0]:
         taxi_game.set_grid_field(np.array(step[1]).reshape((4, 4)))
         taxi_game.draw_field(True)
-        root.after(1000)
+        root.after(750)
         root.update()
 
 

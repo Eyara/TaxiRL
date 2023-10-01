@@ -103,12 +103,14 @@ class TaxiGame:
     def toggle_traffic_light(self, is_gui=False):
         green_light = self.index_2d(5)
         result_light = self.index_2d(6) if green_light is None else green_light
-        result_point = 5 if green_light is None else 6
 
-        self._grid_field[result_light[0]][result_light[1]] = result_point
+        if result_light is not None:
+            result_point = 5 if green_light is None else 6
 
-        if is_gui:
-            self.set_button(result_light[0], result_light[1])
+            self._grid_field[result_light[0]][result_light[1]] = result_point
+
+            if is_gui:
+                self.set_button(result_light[0], result_light[1])
 
     def step(self, action):
         # WASD (not in the specified order)

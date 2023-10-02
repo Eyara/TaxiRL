@@ -1,7 +1,7 @@
 import random
 import tkinter as tk
 import tkinter.font as font
-
+from PIL import ImageTk, Image
 import numpy as np
 
 
@@ -41,6 +41,14 @@ class TaxiGame:
         self._score = 0
         self._action_list = [0, 1, 2, 3, 4]
         self._state_num = self._w * self._h
+
+        # Trick for avoid of PhotoImage being garbage collected
+        self._taxi_img = None
+        self._passenger_img = None
+        self._finish_img = None
+        self._wall_img = None
+        self._green_light_img = None
+        self._red_light_img = None
 
     def index_2d(self, v):
         for i, x in enumerate(self._grid_field):
@@ -198,10 +206,33 @@ class TaxiGame:
         else:
             button.configure(text="")
 
+    def set_back_image(self, button, r, c):
+        if self._grid_field[r][c] == 1:
+            self._taxi_img = ImageTk.PhotoImage(Image.open('./images/taxi.png').resize((150, 150)))
+            button.configure(image=self._taxi_img)
+        elif self._grid_field[r][c] == 2:
+            self._passenger_img = ImageTk.PhotoImage(Image.open('./images/passenger.png').resize((100, 150)))
+            button.configure(image=self._passenger_img)
+        elif self._grid_field[r][c] == 3:
+            self._finish_img = ImageTk.PhotoImage(Image.open('./images/finish.png').resize((150, 150)))
+            button.configure(image=self._finish_img)
+        elif self._grid_field[r][c] == 4:
+            self._wall_img = ImageTk.PhotoImage(Image.open('./images/wall.png').resize((150, 150)))
+            button.configure(image=self._wall_img)
+        elif self._grid_field[r][c] == 5:
+            self._green_light_img = ImageTk.PhotoImage(Image.open('./images/traffic-light-green.png').resize((150, 150)))
+            button.configure(image=self._green_light_img)
+        elif self._grid_field[r][c] == 6:
+            self._red_light_img = ImageTk.PhotoImage(Image.open('./images/traffic-light-red.png').resize((150, 150)))
+            button.configure(image=self._red_light_img)
+        else:
+            button.configure(text="")
+
     def set_button(self, r, c):
         btn = SquareButton(side_length=200, font=font.Font(size=30))
-        self.set_back_color(btn, r, c)
-        self.set_text(btn, r, c)
+        # self.set_back_color(btn, r, c)
+        # self.set_text(btn, r, c)
+        self.set_back_image(btn, r, c)
         btn.grid(row=r, column=c)
 
     def create_env(self):
